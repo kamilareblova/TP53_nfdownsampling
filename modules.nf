@@ -143,7 +143,7 @@ process SORT_INDEX {
 	tag "Sort index on $name using $task.cpus CPUs and $task.memory memory"
 	label "m_mem"
 	label "s_cpu"
-	publishDir "${params.outDirectory}/${sample.run}/mapped/", mode:'copy', pattern: "*.ba*"
+	publishDir "${params.outDirectory}/${sample.run}/mapped/", mode:'copy', pattern: "*.ba*" 
 
 
 	input:
@@ -160,6 +160,27 @@ process SORT_INDEX {
 	samtools sort $bam -o ${name}.sorted.bam
 	samtools index ${name}.sorted.bam ${name}.sorted.bai
 	"""
+}
+
+process FLAGSTAT {
+
+	tag "flagstat on $name using $task.cpus CPUs and $task.memory memory"
+	label "m_mem"
+        label "s_cpu" 
+        publishDir "${params.outDirectory}/${sample.run}/mapped/", mode:'copy'
+	
+	input:
+        tuple val(name), val(sample), path(bam), path(bai)
+  
+        output:
+        tuple val(name), val(sample), path("${name}.flagstat")	
+
+
+        script:
+        """
+        source activate samtools
+        samtools flagstat $bam > ${name}.flagstat
+        """
 }
 
 process PILE_UP {

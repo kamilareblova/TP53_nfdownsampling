@@ -1,4 +1,4 @@
-include { PRIPRAVA; TRIMMING_1; TRIMMING_2; ALIGN; SORT_INDEX; PILE_UP;
+include { PRIPRAVA; TRIMMING_1; TRIMMING_2; ALIGN; SORT_INDEX; FLAGSTAT; PILE_UP;
 VARSCAN; VARDICT; NORMALIZE_VARIANTS; MERGE_VARIANTS; NORMALIZE_MERGED_VARIANTS; ANNOTATE;
 NORMALIZE_VEP; CREATE_TXT; CREATE_FINAL_TABLE; COVERAGE; COVERAGE_STATS } from "${params.projectDirectory}/modules"
 
@@ -27,6 +27,7 @@ trimmed1        = TRIMMING_1(downsample)
 trimmed2	= TRIMMING_2(trimmed1)	
 aligned	= ALIGN(trimmed2)
 sortedbam	= SORT_INDEX(aligned)
+kontrolabam = FLAGSTAT(sortedbam)
 (pileup, _)		= PILE_UP(sortedbam)
 (varscannedSNV, varscannedINDEL)	= VARSCAN(pileup)
 vardicted	= VARDICT(sortedbam)
